@@ -1,0 +1,39 @@
+Laravel API
+1. Install Laravel
+   composer create-project laravel/laravel:^11.0 laravel-api
+2. Setup database configuration mysql in env file
+3. Migrate Database
+   php artisan migrate
+4. Install Api
+   php artisan install:api
+5. Add exception for api route instead of redirect to login page, file in : bootstrap/app.php line 18
+	// Add Exception For API
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                ], 401);
+            }
+        });
+6. Install JWT
+   composer require tymon/jwt-auth 
+7. Publish config JWT
+   php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+8. Generate key JWT
+   php artisan jwt:secret  
+9. Update auth guard for API in file: config/auth.php line 43
+    'api' => [
+        'driver' => 'jwt',
+        'provider' => 'users',
+    ],
+10. Implement JWTSubject in app/Models/User.php line 11, 49 and 54
+11. Create Auth Controller
+    php artisan make:controller api/AuthController     
+12. Create route for api in routes/api.php
+13. Create Middleware
+    php artisan make:middleware AuthApiMiddleware
+    file in app/Middleware/AuthApiMiddleware
+    Apply Middleware to app/bootstrap/app.php
+    And add exception for api route
+
+
