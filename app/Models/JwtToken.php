@@ -30,7 +30,7 @@ class JwtToken extends Model
         self::where('user_id', $user_id)->where('token', '!=', $token)->update(['is_active' => false]);
     }
 
-    static function fnIsTokenActive($token)
+    static function fnIsTokenActive($token): bool
     {
         $res = self::select('is_active')->where('token', $token)->first();
         return $res->is_active;

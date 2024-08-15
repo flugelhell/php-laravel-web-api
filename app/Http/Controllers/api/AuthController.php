@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JwtBlacklistToken;
 use App\Models\JwtToken;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
@@ -14,21 +15,11 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        auth()->setDefaultDriver('api');
-    }
-
-    /**
      * Ceate Credential for Login.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $req)
+    public function register(Request $req): JsonResponse
     {
         $validator = Validator::make($req->all(), [
             'name' => 'required',
@@ -59,7 +50,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(): JsonResponse
     {
         $credentials = request(['email', 'password']);
 
@@ -90,7 +81,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
+    public function me(): JsonResponse
     {
         return response()->json(['status' => true, 'message' => 'success', 'data' => auth()->user()]);
     }
@@ -100,7 +91,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout(Request $req)
+    public function logout(Request $req): JsonResponse
     {
         auth()->logout();
 
@@ -118,7 +109,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh(Request $req)
+    public function refresh(Request $req): JsonResponse
     {
         // deactive token
         JwtToken::fnDeactiveToken($req->bearerToken());
@@ -133,10 +124,12 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token): JsonResponse
     {
         return response()->json([
-            'status' => true, 'message' => 'success', 'data' => [
+            'status' => true,
+            'message' => 'success',
+            'data' => [
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth()->factory()->getTTL() * intval(env('JWT_TTL', 60))

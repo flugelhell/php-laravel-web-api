@@ -35,5 +35,7 @@ Laravel API
     file in app/Middleware/AuthApiMiddleware
     Apply Middleware to app/bootstrap/app.php
     And add exception for api route
+14. Change Tll in app/config/jwt.php to Null
+    'ttl' => env('JWT_TTL', null),
 
 

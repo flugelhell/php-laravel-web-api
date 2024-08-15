@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SetApiDriverMiddleware;
 use App\Http\Middleware\AuthApiMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,7 +16,19 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Add Middleware API
-        $middleware->append(AuthApiMiddleware::class);
+        // $middleware->append(AuthApiMiddleware::class);
+
+        // Declare Alias
+        $middleware->alias([
+            'set.driver.api' => SetApiDriverMiddleware::class,
+            'auth.api' => AuthApiMiddleware::class
+        ]);
+
+        // Append middleware into api group middleware
+        $middleware->api(append: [
+            SetApiDriverMiddleware::class,
+            AuthApiMiddleware::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // Add Exception For API
